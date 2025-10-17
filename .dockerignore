@@ -1,0 +1,16 @@
+**/bin/
+**/obj/
+**/.vs/
+**/.vscode/
+**/Properties/launchSettings.json
+*.db
+*.log
+*.user
+*.csproj.user
+*.suo
+*.sln
+docker-compose*
+Dockerfile*
+.dockerignore*
+/appsettings.Development.json
+/appsettings.*.json

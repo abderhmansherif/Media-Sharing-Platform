@@ -1,0 +1,39 @@
+version: '3.4'
+
+networks:
+  div:
+services:
+  beatbox:
+    image: beatbox:v1.0
+    ports:
+      - "8080:80"
+    container_name: "app"
+    depends_on:
+      - "app-db"
+    build: .
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Server=app-db;Database=BeatBoxDB;User Id=sa;Password=Password123!;TrustServerCertificate=True;Encrypt=False;
+    networks:
+      - div
+    
+  app-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: app-db
+    ports:
+      - "40:1433"
+    networks:
+      - div
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Password123!
+    restart: always
+
+    volumes:
+      - appDbVol:/var/opt/mssql
+    
+volumes:
+  appDbVol:
+
+

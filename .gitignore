@@ -1,0 +1,17 @@
+# Ignore build folders
+bin/
+obj/
+# Ignore user-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+# Ignore publish settings
+Properties/PublishProfiles/
+# Ignore appsettings (secrets)
+appsettings*.json
+# Ignore logs and temp data
+*.log
+*.tmp
+# Ignore environment-specific configs
+.env

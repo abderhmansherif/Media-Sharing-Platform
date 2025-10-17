@@ -1,0 +1,32 @@
+@{
+    ViewData["Title"] = "Email Confirmation Failed";
+}
+
+<div class="d-flex justify-content-center align-items-center" style="min-height:70vh;">
+    <div class="card shadow-lg p-5 text-center" style="max-width:480px; width:100%;
+                background: rgba(255,255,255,0.05);
+                border:1px solid rgba(255,255,255,0.1);
+                border-radius:16px;
+                backdrop-filter:blur(12px);
+                box-shadow:0 0 25px rgba(0,0,0,0.4);">
+
+        <h2 class="fw-bold mb-4" 
+            style="background: var(--gradient);
+                   -webkit-background-clip: text;
+                   -webkit-text-fill-color: transparent;
+                   letter-spacing:1px;">
+            Failed to Confirm Email
+        </h2>
+
+        <p class="text-light mb-3" style="font-size: 1.1rem;">
+            Please sign in again.
+        </p>
+
+        <div class="mt-4">
+            <a asp-controller="Account" asp-action="Login" class="btn w-100"
+               style="background: var(--gradient); color:#fff; font-weight:500; border-radius:10px;">
+                Back to Login
+            </a>
+        </div>
+    </div>
+</div>

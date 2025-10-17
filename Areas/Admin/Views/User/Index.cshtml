@@ -1,0 +1,180 @@
+@model UserViewModel
+
+@{
+    ViewData["Title"] = "Admin Panel";
+}
+@section Styles{
+    <link rel="stylesheet" href="~/css/UserIndexStyle.css">
+}
+
+@if (TempData["message"] != null)
+{
+    <script>
+        toastr.success('@TempData["message"]');
+    </script>
+}
+
+@if(TempData["failedmessage"] != null)
+{
+    <script>
+        toastr.success('@TempData["failedmessage"]');
+    </script>
+}
+
+<h4 class="mb-3">Manage Users</h4>
+
+<a asp-controller="Account" asp-action="Register" asp-area="" class="btn btn-success mb-3">Add a User</a>
+
+<table class="table table-bordered table-hover table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Email</th>
+            <th>Username</th>
+            <th>Roles</th>
+            <th>Actions</th>
+            <th>Manage Roles</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.Users.Any())
+        {
+            <tr>
+                <td colspan="5" class="text-center">There are no user accounts.</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var user in Model.Users)
+            {
+                <tr>
+                    <td>@user.Email</td>
+                    <td>@user.UserName</td>
+                    <td>
+                        @foreach (var roleName in user.RoleNames)
+                        {
+                            <span class="badge bg-primary">@roleName</span>
+                        }
+                    </td>
+                    <td>
+                        <form method="post" asp-area="Admin" asp-action="Delete" asp-controller="User" asp-route-Id="@user.Id" class="d-inline">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                    <td>
+                        <div class="d-flex flex-wrap gap-1">
+                            @foreach (var role in Model.Roles)
+                            {
+                                if (!user.RoleNames.Contains(role.Name))
+                                {
+                                    <form method="post" asp-area="Admin" asp-action="AddToRole" asp-controller="Role" asp-route-UserId="@user.Id" asp-route-RoleName="@role.Name" class="d-inline">
+                                        <button type="submit" class="btn btn-outline-primary btn-sm">Add to @role.Name</button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form method="post" asp-area="Admin" asp-action="RemoveFromRole" asp-controller="Role" asp-route-UserId="@user.Id" asp-route-RoleName="@role.Name" class="d-inline">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">Remove from @role.Name</button>
+                                    </form>
+                                }
+                            }
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<h4 class="mt-5 mb-3">Manage Roles</h4>
+
+<!-- Create Role Form -->
+<div class="card mb-4 shadow-sm">
+    <div class="card-body">
+        <form method="post" asp-action="CreateRole" asp-controller = "Role" class="row g-3 align-items-center">
+            <div class="col-auto">
+                <label for="roleName" class="col-form-label fw-semibold">Create a new role:</label>
+            </div>
+            <div class="col-md-4">
+                <input type="text" name="roleName" id="roleName" class="form-control" placeholder="e.g. Moderator" required>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Create Role</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Create Admin Role if it doesn't exist -->
+@if (!Model.Roles.Any(role => role.Name == "Admin"))
+{
+    <div class="card mb-4 shadow-sm">
+        <div class="card-body d-flex justify-content-between align-items-center">
+            <span class="fw-semibold">The <code>Admin</code> role doesn't exist yet.</span>
+            <form method="post" asp-action="CreateAdminRole" asp-controller = "Role">
+                <button type="submit" class="btn btn-outline-danger">Create Admin Role</button>
+            </form>
+        </div>
+    </div>
+}
+else
+{
+    
+<!-- Roles Table -->
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">All Roles</h5>
+        <table class="table table-bordered table-hover table-striped mt-3">
+            <thead class="table-dark">
+                <tr>
+                    <th>Role Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Roles.Any())
+                {
+                    <tr>
+                        <td colspan="2" class="text-center">There are no Roles here.</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var role in Model.Roles)
+                    {
+                        <tr>
+                            <td>@role.Name</td>
+                            <td>
+                                <form method="post" asp-action="DeleteRole" asp-controller="Role" asp-route-Id="@role.Id" class="d-inline">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+}
+
+
+
+@section Scripts{
+  <!-- CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
+<!-- JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+        toastElList.forEach(function (toastEl) {
+            new bootstrap.Toast(toastEl).show();
+        })
+    });
+</script>
+
+}
+

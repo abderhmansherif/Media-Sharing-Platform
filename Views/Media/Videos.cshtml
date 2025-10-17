@@ -1,0 +1,266 @@
+@using BeatBox.Areas.Media.Models
+@model List<BeatBox.ViewModel.MediaViewModel>
+
+@{
+    ViewData["Title"] = "Videos";
+}
+
+@section Styles {
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --dark-color: #2d3436;
+            --light-color: #f5f6fa;
+            --card-bg: rgba(44, 62, 80, 0.9);
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header h1 {
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            color: #fff;
+        }
+
+        .video-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            height: 100%;
+            position: relative;
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .video-container {
+            position: relative;
+            padding-top: 56.25%; /* 16:9 ratio */
+            background: #000;
+        }
+
+        .video-container video {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+        }
+
+        .video-info {
+            padding: 20px;
+        }
+
+        .video-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .video-description {
+            color: #ddd;
+            margin-bottom: 15px;
+        }
+
+        .video-meta {
+            color: #bbb;
+            font-size: 0.9rem;
+        }
+
+        .favorite-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.6);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .favorite-btn:hover, .favorite-btn.active {
+            background: rgba(231, 76, 60, 0.8);
+            color: #fff;
+        }
+
+        .gradient-border {
+            position: relative;
+            border-radius: 15px;
+            padding: 3px;
+            background: linear-gradient(45deg, #fd79a8, #e17055, #fdcb6e, #00b894, #74b9ff, #a29bfe);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        /* إضافة ستايلات جديدة لصورة واسم المستخدم */
+        .user-info {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+            border: 2px solid var(--secondary-color);
+        }
+
+        .user-name {
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .user-name:hover {
+            color: var(--secondary-color);
+        }
+
+        @@keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    </style>
+}
+
+<div class="header">
+    <div class="container">
+        <h1><i class="fas fa-video me-2"></i> Video Library</h1>
+        <p class="lead">Watch a collection of featured videos</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        @foreach (var video in Model)
+        {
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="gradient-border">
+                    <div class="video-card">
+                        <!-- Favorite button -->
+                        <button class="favorite-btn" data-media-id="@video.Id">
+                            <i class="far fa-heart"></i>
+                        </button>
+
+                        <!-- Video -->
+                        <div class="video-container">
+                            <video class="custom-video-player" controls preload="none" poster="@video.ImageUrl" data-media-id="@video.Id">
+                                <source src="@video.Url" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+
+                        <!-- Video info -->
+                        <div class="video-info">
+                            <h3 class="video-title">@video.Title</h3>
+                            <p class="video-description">@video.Descreption</p>
+                            <div class="video-meta">
+                                <div><i class="fas fa-calendar me-2"></i> <span>@video.UploadedAt.ToShortDateString()</span></div>
+                                <div><i class="fas fa-database me-2"></i> <span>@video.Size</span></div>
+                            </div>
+                        </div>
+
+                        <!-- User info section - الجديد -->
+                        <div class="user-info">
+                            @if (video.User != null)
+                            {
+                                <img src="@video.User.NavBarPicture" class="user-avatar" alt="@video.User.UserName" />
+                                <a asp-action="GetOverView" asp-controller="Profile" asp-route-Id = "@video.User.Id" class="user-name">
+                                    @video.User.UserName
+                                </a>
+                            }
+                            else
+                            {
+                                <img src="/Uploads/Images/navs/default_nav_image.png" class="user-avatar" alt="Default User" />
+                                <span class="user-name">Unknown User</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Favorite button functionality
+            document.querySelectorAll(".favorite-btn").forEach(btn => {
+                btn.addEventListener("click", function () {
+                    const mediaId = this.dataset.mediaId;
+
+                    const formData = new FormData();
+                    formData.append("mediaId", mediaId);
+
+                    fetch('/Media/ToggleFavorite', {
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => response.json())
+                        .then(isFavorite => {
+                            if (isFavorite) {
+                                this.classList.add("active");
+                                this.innerHTML = '<i class="fas fa-heart"></i>';
+                            } else {
+                                this.classList.remove("active");
+                                this.innerHTML = '<i class="far fa-heart"></i>';
+                            }
+                        })
+                        .catch(err => console.error("Error in ToggleFavorite:", err));
+                });
+            });
+
+            // Handle video play to record history
+            document.querySelectorAll(".custom-video-player").forEach(video => {
+                video.addEventListener("play", function () {
+                    // إيقاف جميع الفيديوهات الأخرى عند تشغيل فيديو جديد
+                    document.querySelectorAll(".custom-video-player").forEach(otherVideo => {
+                        if (otherVideo !== this && !otherVideo.paused) {
+                            otherVideo.pause();
+                        }
+                    });
+
+                    // تسجيل الاستماع
+                    const mediaId = this.dataset.mediaId;
+                    const formData = new FormData();
+                    formData.append("mediaId", mediaId);
+
+                    fetch('/Media/RecordListening', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error("Recording failed");
+                        console.log("Video listening recorded successfully");
+                    })
+                    .catch(err => console.error("Error in RecordListening:", err));
+                });
+            });
+        });
+    </script>
+}

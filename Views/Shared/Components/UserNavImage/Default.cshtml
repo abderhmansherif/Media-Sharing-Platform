@@ -1,0 +1,30 @@
+@using BeatBox.Areas.Admin.Models
+
+@model AppUser
+        
+        
+        
+ <div class="user-avatar-dropdown">
+    <button class="user-avatar-btn" id="userDropdownBtn">
+        <img src="@Model.NavBarPicture" 
+                alt="User Avatar" class="user-avatar">
+    </button>
+    <div class="user-dropdown-menu" id="userDropdown">
+        <div class="dropdown-header">@Model.UserName</div>
+
+        @if(!Model.UserName.ToLower().Equals("Guest".ToLower(), StringComparison.InvariantCultureIgnoreCase))
+        {
+             <a class="dropdown-item" asp-area = "" asp-controller="Profile" asp-action="Index" asp-route-Id = "@Model.Id">
+            <i class="fas fa-user"></i> Profile
+            </a>
+            <a class="dropdown-item"  asp-area = "" asp-controller="Settings" asp-action="Index" asp-route-Id = "@Model.Id">
+                <i class="fas fa-cog"></i> Settings
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item"  asp-area = "" asp-controller="Account" asp-action="Signout">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        }
+       
+    </div>
+</div>

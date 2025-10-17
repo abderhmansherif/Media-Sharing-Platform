@@ -1,0 +1,24 @@
+@model BeatBox.ViewModel.ProfileViewModel
+
+<div class="profile-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>Your Favorites</h3>
+    </div>
+
+    <div class="favorites-tabs">
+        <button class="tab-btn active" data-type="audios">Audios</button>
+        <button class="tab-btn" data-type="videos">Videos</button>
+    </div>
+
+    <div class="loading-spinner" id="favorites-loading">
+        <i class="fas fa-spinner fa-spin fa-2x"></i>
+        <p>Loading your favorites...</p>
+    </div>
+
+    <div class="no-items" id="no-favorites" style="display: none;">
+        <i class="fas fa-heart fa-2x mb-3"></i>
+        <p>No favorites found</p>
+    </div>
+
+    <div class="media-grid" id="favorites-grid" data-userid="@Model.Id"></div>
+</div>

@@ -1,0 +1,737 @@
+@model BeatBox.ViewModel.ProfileViewModel
+
+@section Styles {
+    <style>
+        .profile-container {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-sidebar {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+            padding: 1.5rem;
+            height: fit-content;
+        }
+
+        .profile-content {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border: 3px solid var(--accent-color);
+            box-shadow: 0 0 20px rgba(253, 121, 168, 0.3);
+        }
+
+        .sidebar-link {
+            display: block;
+            padding: 12px 15px;
+            color: var(--light-color);
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-link:hover, .sidebar-link.active {
+            background: rgba(253, 121, 168, 0.2);
+            color: var(--accent-color);
+            transform: translateX(5px);
+        }
+
+        .sidebar-link i {
+            margin-left: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* content sections */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .media-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--accent-color);
+        }
+
+        .tab-btn:hover {
+            background: rgba(253, 121, 168, 0.7);
+        }
+
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .media-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .media-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .media-thumbnail {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .media-info {
+            padding: 15px;
+        }
+
+        .media-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .media-type {
+            font-size: 0.8rem;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        .media-date {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .media-controls {
+            margin-top: 10px;
+        }
+
+        .audio-player {
+            width: 100%;
+            height: 40px;
+            border-radius: 5px;
+        }
+
+        .video-player {
+            width: 100%;
+            border-radius: 5px;
+            max-height: 200px;
+        }
+
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .no-items {
+            text-align: center;
+            padding: 30px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .page-btn {
+            padding: 8px 15px;
+            margin: 0 5px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .page-btn.active {
+            background: var(--accent-color);
+        }
+
+        .media-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .media-item:hover .media-actions {
+            opacity: 1;
+        }
+
+        .action-btn {
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: var(--accent-color);
+            transform: scale(1.1);
+        }
+
+        @@keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .user-info {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .user-info h4 {
+            margin-bottom: 10px;
+            color: var(--accent-color);
+        }
+
+        .user-info p {
+            margin-bottom: 5px;
+        }
+    </style>
+}
+
+<div class="profile-container">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="profile-sidebar sticky-top" style="top: 100px;">
+                <div class="text-center mb-4">
+                    <img src="@(Model.PictureUrl ?? "https://via.placeholder.com/150")" class="profile-img rounded-circle mb-3">
+                    <h4>@Model.Username</h4>
+                    <p class="text-muted">Content Creator</p>
+                </div>
+
+                <div class="nav flex-column">
+                    <a href="#" class="sidebar-link active" data-section="user-overview">
+                        <i class="fas fa-user"></i> User Overview
+                    </a>
+                    <a href="#" class="sidebar-link" data-section="user-medias">
+                        <i class="fas fa-play-circle"></i> All Media
+                    </a>
+                    <a href="#" class="sidebar-link" data-section="user-audios">
+                        <i class="fas fa-music"></i> Audios
+                    </a>
+                    <a href="#" class="sidebar-link" data-section="user-videos">
+                        <i class="fas fa-video"></i> Videos
+                    </a>
+                </div>
+
+                <div class="mt-4">
+                    <h5 class="border-bottom pb-2">Media Stats</h5>
+                    <div class="d-flex justify-content-between mt-3">
+                        <div class="stat-card">
+                            <div class="stat-number" id="total-medias">0</div>
+                            <div class="stat-label">Total</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="audio-count">0</div>
+                            <div class="stat-label">Audios</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="video-count">0</div>
+                            <div class="stat-label">Videos</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Overview -->
+        <div class="col-md-9">
+            <div id="user-overview" class="content-section active">
+                <div class="profile-content">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3>User Overview</h3>
+                    </div>
+
+                    <div class="user-info">
+                        <h4>Personal Information</h4>
+                        <p><strong>Username:</strong> @Model.Username</p>
+                        <p><strong>Email:</strong> @Model.Email</p>
+                        <p><strong>Bio:</strong> @(string.IsNullOrEmpty(Model.Bio) ? "No bio yet..." : Model.Bio)</p>
+                    </div>
+
+                    <div class="user-info">
+                        <h4>Media Statistics</h4>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="stat-card">
+                                    <div class="stat-number" id="overview-total">0</div>
+                                    <div class="stat-label">Total Media</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stat-card">
+                                    <div class="stat-number" id="overview-audio">0</div>
+                                    <div class="stat-label">Audio Files</div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stat-card">
+                                    <div class="stat-number" id="overview-video">0</div>
+                                    <div class="stat-label">Video Files</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- All User Medias -->
+            <div id="user-medias" class="content-section">
+                <div class="profile-content">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3>All Media by @Model.Username</h3>
+                    </div>
+
+                    <div class="media-tabs">
+                        <button class="tab-btn active" data-type="all">All Media</button>
+                        <button class="tab-btn" data-type="Audio">Audios</button>
+                        <button class="tab-btn" data-type="Video">Videos</button>
+                    </div>
+
+                    <div class="loading-spinner" id="medias-loading">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                        <p>Loading media...</p>
+                    </div>
+
+                    <div class="no-items" id="no-medias" style="display: none;">
+                        <i class="fas fa-play-circle fa-2x mb-3"></i>
+                        <p>No media found</p>
+                    </div>
+
+                    <div class="media-grid" id="medias-grid"></div>
+
+                    <div class="pagination" id="medias-pagination" style="display: none;">
+                        <!-- سيتم إنشاء أزرار الترقيم ديناميكياً -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Audios -->
+            <div id="user-audios" class="content-section">
+                <div class="profile-content">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3>Audio Files by @Model.Username</h3>
+                    </div>
+
+                    <div class="loading-spinner" id="audios-loading">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                        <p>Loading audios...</p>
+                    </div>
+
+                    <div class="no-items" id="no-audios" style="display: none;">
+                        <i class="fas fa-music fa-2x mb-3"></i>
+                        <p>No audio files found</p>
+                    </div>
+
+                    <div class="media-grid" id="audios-grid"></div>
+                </div>
+            </div>
+
+            <!-- User Videos -->
+            <div id="user-videos" class="content-section">
+                <div class="profile-content">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h3>Video Files by @Model.Username</h3>
+                    </div>
+
+                    <div class="loading-spinner" id="videos-loading">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                        <p>Loading videos...</p>
+                    </div>
+
+                    <div class="no-items" id="no-videos" style="display: none;">
+                        <i class="fas fa-video fa-2x mb-3"></i>
+                        <p>No video files found</p>
+                    </div>
+
+                    <div class="media-grid" id="videos-grid"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    // Global variables
+    let currentUserId = '@Model.Id';
+    let currentMediaPage = 1;
+    const pageSize = 9;
+
+    // Navigation between sections
+    document.querySelectorAll('.sidebar-link').forEach(link => {
+        link.addEventListener('click', function (e) {
+            if (this.getAttribute('data-section')) {
+                e.preventDefault();
+                document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+                const sectionId = this.getAttribute('data-section');
+                if (sectionId) {
+                    document.getElementById(sectionId).classList.add('active');
+                    
+                    // Load appropriate content based on section
+                    if (sectionId === 'user-overview') loadUserOverview();
+                    if (sectionId === 'user-medias') loadUserMedias('all', 1);
+                    if (sectionId === 'user-audios') loadUserAudios();
+                    if (sectionId === 'user-videos') loadUserVideos();
+                }
+            }
+        });
+    });
+
+    // Switch between media tabs
+    document.querySelectorAll('.media-tabs .tab-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+            document.querySelectorAll('.media-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            const mediaType = this.getAttribute('data-type');
+            loadUserMedias(mediaType, 1);
+        });
+    });
+
+    // Pagination buttons (event delegation)
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('page-btn')) {
+            document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            const page = parseInt(e.target.getAttribute('data-page'));
+            const currentType = document.querySelector('.media-tabs .tab-btn.active').getAttribute('data-type');
+            loadUserMedias(currentType, page);
+        }
+    });
+
+    // Load user overview with statistics
+    function loadUserOverview() {
+        // Update statistics in the overview section
+        fetch(`/Profile/GetUserMedias?Id=${currentUserId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const totalMedias = data.length;
+                const audioCount = data.filter(item => item.mediaType === 'Audio').length;
+                const videoCount = data.filter(item => item.mediaType === 'Video').length;
+                
+                // Update overview statistics
+                document.getElementById('overview-total').textContent = totalMedias;
+                document.getElementById('overview-audio').textContent = audioCount;
+                document.getElementById('overview-video').textContent = videoCount;
+                
+                // Update sidebar statistics
+                document.getElementById('total-medias').textContent = totalMedias;
+                document.getElementById('audio-count').textContent = audioCount;
+                document.getElementById('video-count').textContent = videoCount;
+            })
+            .catch(error => {
+                console.error('Error loading user overview:', error);
+            });
+    }
+
+    // Load all user medias with pagination
+    function loadUserMedias(type, page) {
+        const grid = document.getElementById('medias-grid');
+        const loading = document.getElementById('medias-loading');
+        const noItems = document.getElementById('no-medias');
+        const pagination = document.getElementById('medias-pagination');
+
+        loading.style.display = 'block';
+        grid.innerHTML = '';
+        noItems.style.display = 'none';
+        currentMediaPage = page;
+
+        fetch(`/Profile/GetUserMedias?Id=${currentUserId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                loading.style.display = 'none';
+                
+                // Filter data by type if needed
+                let filteredData = data;
+                if (type !== 'all') {
+                    filteredData = data.filter(item => item.mediaType === type);
+                }
+
+                if (!filteredData || filteredData.length === 0) {
+                    noItems.style.display = 'block';
+                    pagination.style.display = 'none';
+                    return;
+                }
+
+                // Apply pagination
+                const startIndex = (page - 1) * pageSize;
+                const endIndex = startIndex + pageSize;
+                const paginatedData = filteredData.slice(startIndex, endIndex);
+
+                // Render media items
+                paginatedData.forEach(item => {
+                    const mediaItem = createMediaItem(item);
+                    grid.appendChild(mediaItem);
+                });
+
+                // Update pagination
+                updatePagination(pagination, filteredData.length, page);
+            })
+            .catch(error => {
+                console.error('Error loading user medias:', error);
+                loading.style.display = 'none';
+                noItems.style.display = 'block';
+                noItems.innerHTML = `<i class="fas fa-exclamation-triangle fa-2x mb-3"></i><p>Error loading media.</p>`;
+                pagination.style.display = 'none';
+            });
+    }
+
+    // Load user audios
+    function loadUserAudios() {
+        const grid = document.getElementById('audios-grid');
+        const loading = document.getElementById('audios-loading');
+        const noItems = document.getElementById('no-audios');
+
+        loading.style.display = 'block';
+        grid.innerHTML = '';
+        noItems.style.display = 'none';
+
+        fetch(`/Profile/GetUserAudios?Id=${currentUserId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                loading.style.display = 'none';
+                
+                if (!data || data.length === 0) {
+                    noItems.style.display = 'block';
+                    return;
+                }
+
+                data.forEach(item => {
+                    const mediaItem = createMediaItem(item);
+                    grid.appendChild(mediaItem);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading user audios:', error);
+                loading.style.display = 'none';
+                noItems.style.display = 'block';
+                noItems.innerHTML = `<i class="fas fa-exclamation-triangle fa-2x mb-3"></i><p>Error loading audios.</p>`;
+            });
+    }
+
+    // Load user videos
+    function loadUserVideos() {
+        const grid = document.getElementById('videos-grid');
+        const loading = document.getElementById('videos-loading');
+        const noItems = document.getElementById('no-videos');
+
+        loading.style.display = 'block';
+        grid.innerHTML = '';
+        noItems.style.display = 'none';
+
+        fetch(`/Profile/GetUserVideos?Id=${currentUserId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                loading.style.display = 'none';
+                
+                if (!data || data.length === 0) {
+                    noItems.style.display = 'block';
+                    return;
+                }
+
+                data.forEach(item => {
+                    const mediaItem = createMediaItem(item);
+                    grid.appendChild(mediaItem);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading user videos:', error);
+                loading.style.display = 'none';
+                noItems.style.display = 'block';
+                noItems.innerHTML = `<i class="fas fa-exclamation-triangle fa-2x mb-3"></i><p>Error loading videos.</p>`;
+            });
+    }
+
+    // Helper function to create a media item
+    function createMediaItem(item) {
+        const mediaItem = document.createElement('div');
+        mediaItem.className = 'media-item';
+        
+        const isAudio = item.mediaType === 'Audio';
+        const isVideo = item.mediaType === 'Video';
+        
+        const thumbnailUrl = item.imageurl || (isAudio ? 'https://via.placeholder.com/300?text=Audio' : 'https://via.placeholder.com/300?text=Video');
+        
+        mediaItem.innerHTML = `
+            <img src="${thumbnailUrl}" class="media-thumbnail">
+            <div class="media-actions">
+                <button class="action-btn" title="Play">
+                    <i class="fas fa-play"></i>
+                </button>
+                <button class="action-btn" title="Download">
+                    <i class="fas fa-download"></i>
+                </button>
+            </div>
+            <div class="media-info">
+                <div class="media-title">${item.title || 'Untitled'}</div>
+                <div class="media-type">${isAudio ? 'Audio' : 'Video'}</div>
+                <div class="media-date">${new Date(item.addedAt).toLocaleDateString()}</div>
+                <div class="media-controls">
+                    ${isAudio ? 
+                        `<audio controls class="audio-player">
+                            <source src="${item.url}" type="audio/mpeg">
+                            Your browser does not support the audio element.
+                         </audio>` : 
+                        `<video controls class="video-player" preload="metadata">
+                            <source src="${item.url}" type="video/mp4">
+                            Your browser does not support the video element.
+                         </video>`
+                    }
+                </div>
+            </div>`;
+        
+        // Add event listeners for action buttons
+        const playBtn = mediaItem.querySelector('.media-actions button:first-child');
+        const downloadBtn = mediaItem.querySelector('.media-actions button:last-child');
+        
+        playBtn.addEventListener('click', function() {
+            const mediaElement = isAudio ? 
+                mediaItem.querySelector('audio') : 
+                mediaItem.querySelector('video');
+            
+            if (mediaElement.paused) {
+                mediaElement.play();
+                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            } else {
+                mediaElement.pause();
+                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+            }
+        });
+        
+        downloadBtn.addEventListener('click', function() {
+            // Create a temporary link to trigger download
+            const a = document.createElement('a');
+            a.href = item.url;
+            a.download = item.title || (isAudio ? 'audio' : 'video');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        });
+        
+        return mediaItem;
+    }
+
+    // Helper function to update pagination
+    function updatePagination(paginationElement, totalItems, currentPage) {
+        const totalPages = Math.ceil(totalItems / pageSize);
+        
+        if (totalPages <= 1) {
+            paginationElement.style.display = 'none';
+            return;
+        }
+        
+        paginationElement.style.display = 'flex';
+        paginationElement.innerHTML = '';
+        
+        for (let i = 1; i <= totalPages; i++) {
+            const pageBtn = document.createElement('button');
+            pageBtn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+            pageBtn.textContent = i;
+            pageBtn.setAttribute('data-page', i);
+            paginationElement.appendChild(pageBtn);
+        }
+    }
+
+    // Initial load
+    document.addEventListener('DOMContentLoaded', function() {
+        // Load initial content
+        loadUserOverview();
+        loadUserMedias('all', 1);
+    });
+</script>
+}

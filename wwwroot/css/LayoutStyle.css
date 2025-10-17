@@ -1,0 +1,146 @@
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('/Images/City_Pop.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(6px);
+            transition: all 0.3s ease-in-out;
+        }
+        nav .logo:hover {
+            color: #ff90c2;
+            transform: scale(1.05);
+            transition: all 0.2s ease-in-out;
+        }
+
+        nav.shrink {
+            width: 70%;
+            margin: 0 auto;
+            border-radius: 20px;
+            padding: 10px 30px;
+        }
+
+        nav .logo {
+            font-size: 1.8em;
+            color: #ffddee;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 25px;
+            margin: 0;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1em;
+            transition: padding 0.3s ease-in-out, border-radius 0.3s ease-in-out, background-color 0.3s ease-in-out;
+        }
+
+        nav ul li a:hover {
+            color: #ff90c2;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            padding: 80px 30px 60px;
+            max-width: 1200px;
+            margin: auto;
+            flex: 1 0 auto; /* Allow container to grow but not shrink */
+        }
+
+        footer {
+            background-color: rgba(0, 0, 0, 0.85);
+            text-align: center;
+            padding: 20px;
+            color: #ccc;
+            font-size: 0.95em;
+            width: 100%;
+            flex-shrink: 0; /* Prevent footer from shrinking */
+        }
+
+        .slider {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            aspect-ratio: 3/4;
+            overflow: hidden;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .slider img {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 1s ease;
+            border-radius: 12px;
+        }
+
+        .slider img.active {
+            opacity: 1;
+            z-index: 1;
+        }
+        
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .container {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        .nav-link.highlighted {
+            color: #ff90c2; /* لون مميز */
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 5px 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link.highlighted:hover {
+            color: #fff;
+            background-color: #ff90c2;
+        }
+        

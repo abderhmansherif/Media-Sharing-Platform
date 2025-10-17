@@ -1,0 +1,265 @@
+@using BeatBox.Areas.Media.Models
+@model List<BeatBox.ViewModel.MediaViewModel>
+
+@{
+    ViewData["Title"] = "Audios";
+}
+
+@section Styles {
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --dark-color: #2d3436;
+            --light-color: #f5f6fa;
+            --card-bg: rgba(44, 62, 80, 0.9);
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header h1 {
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            color: #fff;
+        }
+
+        .audio-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            height: 100%;
+            position: relative;
+        }
+
+        .audio-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .audio-cover {
+            height: 200px;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .audio-controls {
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .audio-info {
+            padding: 20px;
+        }
+
+        .audio-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .audio-description {
+            color: #ddd;
+            margin-bottom: 15px;
+        }
+
+        .audio-meta {
+            color: #bbb;
+            font-size: 0.9rem;
+        }
+
+        .favorite-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.6);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .favorite-btn:hover, .favorite-btn.active {
+            background: rgba(231, 76, 60, 0.8);
+            color: #fff;
+        }
+
+        .custom-audio-player {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .gradient-border {
+            position: relative;
+            border-radius: 15px;
+            padding: 3px;
+            background: linear-gradient(45deg, #fd79a8, #e17055, #fdcb6e, #00b894, #74b9ff, #a29bfe);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        /* إضافة ستايلات جديدة لصورة واسم المستخدم */
+        .user-info {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+            border: 2px solid var(--secondary-color);
+        }
+
+        .user-name {
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .user-name:hover {
+            color: var(--secondary-color);
+        }
+
+        @@keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+    </style>
+}
+
+<div class="header">
+    <div class="container">
+        <h1><i class="fas fa-music me-2"></i> Audio Library</h1>
+        <p class="lead">Listen to a collection of featured audios</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        @foreach (var audio in Model)
+        {
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="gradient-border">
+                    <div class="audio-card">
+                        <!-- Favorite button -->
+                        <button class="favorite-btn" data-media-id="@audio.Id">
+                            <i class="far fa-heart"></i>
+                        </button>
+
+                        <!-- Cover image -->
+                        <img src="@audio.ImageUrl" class="audio-cover" alt="@audio.Title" />
+
+                        <!-- Audio player -->
+                        <div class="audio-controls">
+                            <audio class="custom-audio-player" controls data-media-id="@audio.Id">
+                                <source src="@audio.Url" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                            </audio>
+                        </div>
+
+                        <!-- Audio info -->
+                        <div class="audio-info">
+                            <h3 class="audio-title">@audio.Title</h3>
+                            <p class="audio-description">@audio.Descreption</p>
+                            <div class="audio-meta">
+                                <div><i class="fas fa-calendar me-2"></i> <span>@audio.UploadedAt.ToShortDateString()</span></div>
+                                <div><i class="fas fa-database me-2"></i> <span>@audio.Size</span></div>
+                            </div>
+                        </div>
+
+                        <div class="user-info">
+                            @if (audio.User != null)
+                            {
+                                <img src="@audio.User.NavBarPicture" class="user-avatar" alt="@audio.User.UserName" />
+                                <a asp-action="GetOverView" asp-controller="Profile" asp-route-Id = "@audio.User.Id" class="user-name">
+                                    @audio.User.UserName
+                                </a>
+                            }
+                            else
+                            {
+                                <img src="/Uploads/Images/navs/default_nav_image.png" class="user-avatar" alt="Default User" />
+                                <span class="user-name">Unknown User</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // زرار الـ Favorite
+            document.querySelectorAll(".favorite-btn").forEach(btn => {
+                btn.addEventListener("click", function () {
+                    const mediaId = this.dataset.mediaId;
+
+                    const formData = new FormData();
+                    formData.append("mediaId", mediaId);
+
+                    fetch('/Media/ToggleFavorite', {
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => response.json())
+                        .then(isFavorite => {
+                            if (isFavorite) {
+                                this.classList.add("active");
+                                this.innerHTML = '<i class="fas fa-heart"></i>'; // قلب مليان
+                            } else {
+                                this.classList.remove("active");
+                                this.innerHTML = '<i class="far fa-heart"></i>'; // قلب فاضي
+                            }
+                        })
+                        .catch(err => console.error("Error in ToggleFavorite:", err));
+                });
+            });
+
+            // لما يتشغل الصوت
+            document.querySelectorAll("audio").forEach(player => {
+                player.addEventListener("play", function () {
+                    const mediaId = this.dataset.mediaId;
+
+                    const formData = new FormData();
+                    formData.append("mediaId", mediaId);
+
+                    fetch('/Media/RecordListening', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error("Recording failed");
+                        console.log("Listening recorded successfully");
+                    })
+                    .catch(err => console.error("Error in RecordListening:", err));
+                });
+            });
+        });
+    </script>
+}

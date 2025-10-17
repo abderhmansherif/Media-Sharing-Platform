@@ -1,0 +1,221 @@
+@model TwoFactorViewModel
+
+@{ Layout = null; }
+
+
+<div class="security-card">
+    <div class="card-header">
+        <div class="header-content">
+            <i class="fas fa-shield-alt me-2"></i>
+            <div>
+                <h5 class="mb-1 text-accent">Two-Factor Authentication</h5>
+                <p class="mb-0">Add an extra layer of security to your account</p>
+            </div>
+        </div>
+        <span class="status-badge @(Model.TwoFactorEnabled ? "enabled" : "disabled")">
+            @(Model.TwoFactorEnabled ? "ENABLED" : "DISABLED")
+        </span>
+    </div>
+
+    <div class="card-body">
+        @if (Model.TwoFactorEnabled)
+        {
+            <div class="status-message success">
+                <i class="fas fa-check-circle me-2"></i>
+                <span>Two-factor authentication is enabled for your account</span>
+            </div>
+
+            <div class="action-buttons">
+              <form asp-action="Disable2FA" asp-controller="Settings" method="post">
+                    <input type="hidden" asp-for="Provider" value="Email">
+                    <input type="hidden" asp-for = "TwoFactorEnabled">
+                    <button type="submit"  class="btn btn-danger">
+                        <i class="fas fa-times me-2"></i>Disable 2FA
+                    </button>
+                </form>
+            </div>
+        }
+        else
+        {
+            <div class="status-message info">
+                <i class="fas fa-info-circle me-2"></i>
+                <span>Protect your account with two-factor authentication</span>
+            </div>
+
+            <div class="features-list">
+                <div class="feature-item">
+                    <i class="fas fa-check text-success me-2"></i>
+                    <span>Extra security layer for your account</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-check text-success me-2"></i>
+                    <span>Protect against unauthorized access</span>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-check text-success me-2"></i>
+                    <span>Required for sensitive operations</span>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <form asp-action="EnableAuthenticator" asp-controller = "Settings" method="post">
+                    <input type="hidden" asp-for = "Provider" value="Email">
+                    
+                    <button class="btn btn-primary"  type="submit"><i class="fas fa-shield-alt me-2"></i>Enable 2FA</button>
+                </form>
+            </div>
+        }
+    </div>
+</div>
+
+<style>
+.security-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.header-content i {
+    font-size: 1.5rem;
+    color: var(--accent-color);
+    margin-top: 0.25rem;
+}
+
+.status-badge {
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-badge.enabled {
+    background: rgba(46, 213, 115, 0.1);
+    color: #2ed573;
+    border: 1px solid rgba(46, 213, 115, 0.2);
+}
+
+.status-badge.disabled {
+    background: rgba(255, 71, 87, 0.1);
+    color: #ff4757;
+    border: 1px solid rgba(255, 71, 87, 0.2);
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.status-message {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border: 1px solid transparent;
+}
+
+.status-message.success {
+    background: rgba(46, 213, 115, 0.1);
+    color: #2ed573;
+    border-color: rgba(46, 213, 115, 0.2);
+}
+
+.status-message.warning {
+    background: rgba(255, 165, 0, 0.1);
+    color: #ffa500;
+    border-color: rgba(255, 165, 0, 0.2);
+}
+
+.status-message.info {
+    background: rgba(253, 121, 168, 0.1);
+    color: var(--accent-color);
+    border-color: rgba(253, 121, 168, 0.2);
+}
+
+.features-list {
+    margin: 1.5rem 0;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    background: var(--gradient);
+    border: none;
+}
+
+.btn-primary:hover {
+    box-shadow: 0 5px 15px rgba(253, 121, 168, 0.4);
+}
+
+.btn-danger {
+    background: linear-gradient(45deg, #dc3545, #e35d6a);
+    border: none;
+}
+
+.btn-danger:hover {
+    box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+}
+
+.btn-outline-primary {
+    background: transparent;
+    border: 1px solid var(--accent-color);
+    color: var(--accent-color);
+}
+
+.btn-outline-primary:hover {
+    background: rgba(253, 121, 168, 0.1);
+}
+
+@@media (max-width: 576px) {
+    .card-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+}
+</style>

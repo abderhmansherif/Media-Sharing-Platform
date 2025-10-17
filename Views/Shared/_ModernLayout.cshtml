@@ -1,0 +1,405 @@
+@using System.Security.Claims
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BeatBox</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    @RenderSection(name: "Styles",false)
+
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --accent-color: #fd79a8;
+            --dark-color: #2d3436;
+            --light-color: #dfe6e9;
+            --gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), 
+                        url('https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1964&q=80') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--light-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Navigation - Modern and Elegant */
+        .navbar {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(15px);
+            padding: 12px 4%;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            min-height: 70px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .navbar.shrink {
+            padding: 8px 4%;
+            background: rgba(0, 0, 0, 0.85);
+        }
+        
+        .navbar-brand {
+            font-size: 1.6rem;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar-brand:hover {
+            transform: scale(1.02);
+        }
+        
+        .navbar-nav {
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .nav-link {
+            color: var(--light-color) !important;
+            font-weight: 500;
+            margin: 0 3px;
+            padding: 8px 15px !important;
+            border-radius: 8px;
+            transition: all 0.25s ease;
+            font-size: 0.95rem;
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--accent-color);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        
+        .nav-link:hover::after, .nav-link:focus::after {
+            width: 70%;
+        }
+        
+        .nav-link:hover, .nav-link:focus {
+            color: var(--accent-color) !important;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .nav-link.highlighted {
+            background: rgba(253, 121, 168, 0.15);
+            color: var(--accent-color) !important;
+            box-shadow: 0 4px 10px rgba(253, 121, 168, 0.2);
+        }
+        
+        .nav-link.highlighted:hover {
+            background: var(--accent-color);
+            color: white !important;
+            box-shadow: 0 6px 15px rgba(253, 121, 168, 0.3);
+        }
+        
+        /* User Avatar with Dropdown */
+        .user-avatar-dropdown {
+            position: relative;
+            margin-left: 10px;
+        }
+        
+        .user-avatar-btn {
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .user-avatar-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 0 2px var(--accent-color);
+        }
+        
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--secondary-color);
+            display: block;
+            transition: all 0.3s ease;
+        }
+        
+        /* Dropdown Menu - Modern Style */
+        .user-dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: rgba(25, 30, 35, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            padding: 10px 0;
+            min-width: 200px;
+            z-index: 1000;
+            margin-top: 15px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .user-dropdown-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        
+        .dropdown-header {
+            padding: 10px 16px;
+            color: var(--accent-color);
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .dropdown-item {
+            color: var(--light-color);
+            padding: 10px 16px;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            border-left: 3px solid transparent;
+        }
+        
+        .dropdown-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--accent-color);
+            border-left: 3px solid var(--accent-color);
+            padding-left: 20px;
+        }
+        
+        .dropdown-divider {
+            border-color: rgba(255, 255, 255, 0.1);
+            margin: 8px 0;
+        }
+        
+        /* Main Content */
+        .container {
+            padding: 2rem 1.5rem;
+            flex: 1;
+            margin-top: 80px;
+        }
+        
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        footer a:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+        
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .navbar {
+                padding: 8px 3%;
+            }
+            
+            .navbar-collapse {
+                background: rgba(0, 0, 0, 0.95);
+                padding: 15px;
+                border-radius: 12px;
+                margin-top: 10px;
+                backdrop-filter: blur(15px);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+            }
+            
+            .user-dropdown-menu {
+                position: static;
+                margin-top: 10px;
+                background: rgba(35, 40, 45, 0.95);
+                width: 100%;
+            }
+            
+            .container {
+                margin-top: 75px;
+                padding: 1.5rem 1rem;
+            }
+        }
+        
+        /* Toast Notifications */
+        .toast-container {
+            z-index: 9999;
+        }
+    </style>
+</head>
+<body>
+    <header>
+       <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+    <div class="container-fluid">
+        <a class="navbar-brand" asp-area = "" asp-action="Index" asp-controller = "Home">
+            <i class="fas fa-music"></i> BeatBox
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" 
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-area = "" asp-action="Index" asp-controller="Home">Home</a>
+                </li>
+
+                @if(User.Identity.IsAuthenticated)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area = "" asp-route-Id = "@(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value)" asp-action="Create" asp-controller="Media">Upload</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area = ""  asp-action="Explore" asp-controller="Media">Explore</a>
+                    </li>
+                }
+             
+                <li class="nav-item">
+                    <a class="nav-link" asp-action="Privacy" asp-controller="Home">Privacy</a>
+                </li>
+
+                @if(User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link highlighted" asp-area="Admin" asp-action="Index" asp-controller="User">Manage Users</a>
+                    </li>
+                }
+            </ul>
+
+            <ul class="navbar-nav">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li class="nav-item">
+                        @await Component.InvokeAsync("UserNavImage")
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Account" asp-action="Register">Signin</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
+                    </li>
+                }
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Home" asp-action="About">About</a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+    </header>
+
+    <div class="container">
+        <main role="main">
+                @RenderBody()
+        </main>
+    </div>
+
+    <footer class="mt-auto">
+        &copy; 2025 - BeatBox - <a href="#">Privacy</a>
+    </footer>
+
+    <!-- Bootstrap & jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Navbar shrink effect
+        window.addEventListener('scroll', function () {
+            const nav = document.getElementById('mainNav');
+            if (window.scrollY > 30) {
+                nav.classList.add('shrink');
+            } else {
+                nav.classList.remove('shrink');
+            }
+        });
+
+        // Toggle dropdown menu
+        document.getElementById('userDropdownBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            const dropdown = document.getElementById('userDropdown');
+            dropdown.classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('userDropdown');
+            const avatarBtn = document.getElementById('userDropdownBtn');
+            
+            if (!avatarBtn.contains(event.target) && !dropdown.contains(event.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Smooth close on dropdown item click
+        document.querySelectorAll('.dropdown-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.getElementById('userDropdown').classList.remove('show');
+            });
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

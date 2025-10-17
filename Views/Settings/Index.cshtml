@@ -1,0 +1,423 @@
+@using System.Security.Claims
+@{
+    ViewData["Title"] = "Settings";
+}
+
+@section Styles {
+    <style>
+        .settings-container {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(15px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .settings-sidebar {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+            padding: 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .settings-content-area {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+            padding: 1.5rem;
+            min-height: 500px;
+        }
+
+        .sidebar-header {
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-header h4 {
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+
+        .sidebar-link {
+            display: block;
+            padding: 12px 15px;
+            color: var(--light-color);
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+            border: none;
+            background: none;
+            text-align: left;
+            width: 100%;
+        }
+
+        .sidebar-link:hover, .sidebar-link.active {
+            background: rgba(253, 121, 168, 0.2);
+            color: var(--accent-color);
+            transform: translateX(5px);
+        }
+
+        .sidebar-link i {
+            margin-left: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-link.text-danger:hover {
+            background: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+        }
+
+        .settings-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .settings-section.active {
+            display: block;
+        }
+
+        .section-header {
+            padding: 1.5rem 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px 12px 0 0;
+        }
+
+        .section-header h3 {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+
+        .section-description {
+            margin-bottom: 0;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .settings-content {
+            padding: 2rem;
+        }
+
+        .spinner-border {
+            color: var(--accent-color);
+        }
+
+        .alert-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.5s ease;
+            background: rgba(0, 200, 83, 0.9);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .alert-message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @@keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @@media (max-width: 768px) {
+            .settings-sidebar {
+                position: static;
+                margin-bottom: 1rem;
+            }
+            
+            .settings-content {
+                padding: 1rem;
+            }
+            
+            .section-header {
+                padding: 1rem 1.5rem;
+            }
+
+            .sidebar-link {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* تنسيقات إضافية للـ Settings */
+        .form-control {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        .form-control:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-color);
+            color: white;
+            box-shadow: 0 0 0 2px rgba(253, 121, 168, 0.2);
+        }
+
+        .form-label {
+            color: var(--light-color);
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 5px;
+            color: white;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(253, 121, 168, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #dc3545, #e35d6a);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 5px;
+            color: white;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .text-danger {
+            color: #dc3545 !important;
+        }
+
+        .text-accent {
+            color: var(--accent-color) !important;
+        }
+    </style>
+}
+
+<div class="settings-container">
+    <div class="row">
+        <!-- Sidebar Sections -->
+        <div class="col-lg-3 col-md-4">
+            <div class="settings-sidebar">
+                <div class="sidebar-header">
+                    <h4><i class="fas fa-cog me-2"></i>Settings</h4>
+                    <p class="text-muted">Manage your account</p>
+                </div>
+
+                <nav class="nav flex-column">
+                    <a class="sidebar-link active" href="/Settings/AccountSettings" data-section="account">
+                        <i class="fas fa-user-circle"></i> Profile Settings
+                    </a>
+                    <a class="sidebar-link" href="/Settings/TwoFactorPartial" data-section="twofactor">
+                        <i class="fas fa-shield-alt"></i> Two-Factor Auth
+                    </a>
+                    <a class="sidebar-link" href="/Settings/ChangePasswordPartial" data-section="password">
+                        <i class="fas fa-key"></i> Change Password
+                    </a>
+                    <a class="sidebar-link text-danger" href="/Settings/DangerZoneSettings" data-section="danger">
+                        <i class="fas fa-exclamation-triangle"></i> Danger Zone
+                    </a>
+                </nav>
+
+                <div class="mt-4">
+                    <h5 class="border-bottom pb-2" style="border-color: rgba(255,255,255,0.1) !important;">Quick Actions</h5>
+                    <div class="d-grid gap-2 mt-3">
+                        <a href="/Profile/index/@(User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value)" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Profile
+                        </a>
+                        <a href="/Home/index" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-home me-2"></i>Go Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-lg-9 col-md-8">
+            <div class="settings-content-area">
+                <!-- Profile Settings Section -->
+                <div id="account-section" class="settings-section active">
+                    <div class="section-header">
+                        <h3><i class="fas fa-user-circle me-2"></i>Profile Settings</h3>
+                        <p class="section-description">Manage your personal information and profile picture</p>
+                    </div>
+                    <div id="account-settings-container" class="settings-content">
+                        <div class="text-center">
+                            <div class="spinner-border text-primary" role="status"></div>
+                            <p class="mt-2">Loading profile settings...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Two-Factor Section -->
+                <div id="twofactor-section" class="settings-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-shield-alt me-2"></i>Two-Factor Authentication</h3>
+                        <p class="section-description">Enhance your account security with 2FA</p>
+                    </div>
+                    <div id="twofactor-settings-container" class="settings-content">
+                        <div class="text-center">
+                            <div class="spinner-border text-primary" role="status"></div>
+                            <p class="mt-2">Loading security settings...</p>
+                        </div>
+                    </div>
+                </div>
+
+               <!-- Change Password Section -->
+                <div id="password-section" class="settings-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-key me-2"></i>Change Password</h3>
+                        <p class="section-description">Update your password regularly for security</p>
+                    </div>
+                    <div id="password-settings-container" class="settings-content">
+                        <div class="text-center">
+                            <div class="spinner-border text-primary" role="status"></div>
+                            <p class="mt-2">Loading password settings...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Danger Zone Section -->
+                <div id="danger-section" class="settings-section">
+                    <div class="section-header">
+                        <h3 class="text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Danger Zone</h3>
+                        <p class="section-description text-danger">Irreversible and destructive actions</p>
+                    </div>
+                    <div id="danger-settings-container" class="settings-content">
+                        <div class="text-center">
+                            <div class="spinner-border text-danger" role="status"></div>
+                            <p class="mt-2 text-danger">Loading danger zone settings...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="alert-message" id="success-alert" style="display: none;">
+    <i class="fas fa-check-circle me-2"></i> Changes saved successfully
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Initialize first section
+            loadSection('account');
+
+            // Sidebar navigation click event
+            $('.sidebar-link').on('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class from all links
+                $('.sidebar-link').removeClass('active');
+                // Add active class to clicked link
+                $(this).addClass('active');
+                
+                // Get section to show
+                var section = $(this).data('section');
+                showSection(section);
+            });
+
+            function showSection(section) {
+                // Hide all sections
+                $('.settings-section').removeClass('active');
+                
+                // Show selected section
+                $('#' + section + '-section').addClass('active');
+                
+                // Load content
+                loadSection(section);
+            }
+
+            function loadSection(section) {
+                var container = $('#' + section + '-settings-container');
+                var url = '';
+                
+                switch(section) {
+                    case 'account':
+                        url = '@Url.Action("AccountSettings", "Settings")';
+                        break;
+                    case 'twofactor':
+                        url = '@Url.Action("TwoFactorPartial", "Settings")';
+                        break;
+                    case 'password':
+                        url = '@Url.Action("ChangePasswordPartial", "Settings")';
+                        break;
+                    case 'danger':
+                        url = '@Url.Action("DangerZoneSettings", "Settings")';
+                        break;
+                }
+                
+                if (url) {
+                    container.html(`
+                        <div class="text-center">
+                            <div class="spinner-border text-primary" role="status"></div>
+                            <p class="mt-2">Loading ${section} settings...</p>
+                        </div>
+                    `);
+                    
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        success: function(response) {
+                            container.html(response);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error loading section:', error);
+                            container.html(
+                                '<div class="alert alert-danger">' +
+                                '<i class="fas fa-exclamation-triangle me-2"></i>' +
+                                'Failed to load content. Please try again.' +
+                                '</div>'
+                            );
+                        }
+                    });
+                }
+            }
+
+            window.showSuccessMessage = function(message) {
+                const alert = $('#success-alert');
+                if (message) {
+                    alert.html('<i class="fas fa-check-circle me-2"></i>' + message);
+                }
+                alert.show();
+                setTimeout(() => { alert.addClass('show'); }, 100);
+                setTimeout(() => {
+                    alert.removeClass('show');
+                    setTimeout(() => { alert.hide(); }, 500);
+                }, 3000);
+            };
+        });
+    </script>
+}

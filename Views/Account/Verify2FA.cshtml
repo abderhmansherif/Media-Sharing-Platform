@@ -1,0 +1,109 @@
+@model BeatBox.ViewModel.Verify2FAViewModel
+@{
+    ViewData["Title"] = "Verify Two-Factor Authentication";
+}
+
+<div class="verify-container d-flex justify-content-center align-items-center">
+    <div class="verify-card shadow-lg rounded-4 p-4">
+        <h2 class="mb-3 text-center fw-bold text-gradient">
+            <i class="fas fa-shield-alt me-2"></i> Two-Factor Verification
+        </h2>
+
+        <p class="text-center mb-4 text-light">
+            We've sent a verification code to your email. <br />
+            Please check your inbox and enter the code below to continue.
+        </p>
+
+        <form asp-action="Verify2FA" asp-controller="Account" method="post">
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+            <input type="hidden" asp-for="Id" />
+
+            <div class="mb-3">
+                <label asp-for="Code" class="form-label fw-semibold">Verification Code</label>
+                <input asp-for="Code" class="form-control stylish-input text-center" placeholder="Enter 6-digit code..." />
+                <span asp-validation-for="Code" class="text-danger"></span>
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-gradient fw-bold">
+                    <i class="fas fa-check-circle me-2"></i> Verify
+                </button>
+            </div>
+
+            <div class="text-center mt-3">
+                <a href="@Url.Action("Resend2FA", "Account", new { id = Model.Id })" class="text-decoration-none text-light small">
+                    Didn't receive the code? <span class="text-gradient fw-semibold">Resend</span>
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .verify-container {
+            min-height: calc(100vh - 200px);
+        }
+
+        .verify-card {
+            max-width: 450px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .text-gradient {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stylish-input {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            font-size: 1.1rem;
+            letter-spacing: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .stylish-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .stylish-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(253, 121, 168, 0.2);
+        }
+
+        .form-label {
+            color: var(--light-color);
+        }
+
+        .btn-gradient {
+            background: var(--gradient);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            font-size: 1rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+
+        .text-light {
+            color: rgba(255, 255, 255, 0.85) !important;
+        }
+    </style>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

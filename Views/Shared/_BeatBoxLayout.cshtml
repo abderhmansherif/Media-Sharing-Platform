@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - BeatBox</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/LayoutStyle.css">
+    @RenderSection(name: "Styles",false)
+    <link rel="stylesheet" href="~/BeatBox.styles.css" asp-append-version="true" />
+
+    
+</head>
+<body>
+    <nav id="mainNav">
+        <a class="logo" asp-area="" asp-controller="Home" asp-action="Index">BeatBox</a>
+        <ul>
+            <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+            <li><a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
+            @if(User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+            {
+                <li class="nav-item">
+                    <a class="nav-link highlighted" asp-area="Admin" asp-controller="User" asp-action="Index">Manage Users</a>
+                </li>
+            }
+            @if(!User.Identity.IsAuthenticated)
+            {
+                <li><a asp-area="" asp-controller="Account" asp-action="Login">Login</a></li>
+                <li><a asp-area="" asp-controller="Account" asp-action="Register">Signin</a></li>
+            }
+            else
+            {
+                <li class="nav-item dropdown">
+                    @await Component.InvokeAsync("UserNavImage")
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Signout">
+                        Logout
+                    </a>
+                </li>
+            }
+           
+        </ul>
+    </nav>
+
+    <div class="container">
+        <main role="main">
+            <div aria-live="polite" aria-atomic="true" class="position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+   
+</div>
+
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer>
+        &copy; 2025 - BeatBox - <a asp-area="" asp-controller="Home" asp-action="Privacy" style="color: #ffb3d9;">Privacy</a>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    
+    <script>
+        // Navbar shrink effect on scroll
+        window.addEventListener('scroll', function () {
+            const nav = document.getElementById('mainNav');
+            if (window.scrollY > 50) {
+                nav.classList.add('shrink');
+            } else {
+                nav.classList.remove('shrink');
+            }
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

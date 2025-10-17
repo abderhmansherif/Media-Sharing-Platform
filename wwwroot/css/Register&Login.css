@@ -1,0 +1,112 @@
+    /* رسائل الخطأ */
+    .field-validation-error {
+        color: #ff4d4d;
+        font-weight: bold;
+        margin-top: 5px;
+        display: block;
+    }
+
+    /* بوردر input الغلط */
+    input.input-validation-error,
+    select.input-validation-error,
+    textarea.input-validation-error {
+        border: 1px solid #ff4d4d !important;
+        animation: shake 0.2s ease-in-out 1;
+        background-color: #1c0d0d;
+        color: #fff;
+    }
+
+    /* ركز على الـ focus برضو لما يبقى غلط */
+    input.input-validation-error:focus {
+        box-shadow: 0 0 0 0.15rem rgba(255, 77, 77, 0.25);
+    }
+
+    /* أنيميشن الاهتزاز */
+    @keyframes shake {
+        0% { transform: translateX(0); }
+        25% { transform: translateX(-4px); }
+        50% { transform: translateX(4px); }
+        75% { transform: translateX(-2px); }
+        100% { transform: translateX(0); }
+    }
+
+    .page-center {
+        min-height: calc(100vh - 120px); /* علشان نسيب مساحة للنافبار */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px;
+    }
+
+    .register-container {
+        background: rgba(0, 0, 0, 0.8);
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 0 25px rgba(255, 0, 200, 0.4);
+        width: 100%;
+        max-width: 400px;
+        color: #ffffff;
+    }
+
+    .register-header {
+        text-align: center;
+        font-size: 2rem;
+        font-weight: bold;
+        color: #ff85a2;
+        margin-bottom: 25px;
+    }
+
+    .form-label {
+        color: #ff85a2;
+        font-weight: bold;
+    }
+
+    .form-control {
+        background-color: #1c1c1c;
+        border: 1px solid #ff85a2;
+        color: #fff;
+    }
+
+    .form-control:focus {
+        border-color: #ff4dc4;
+        box-shadow: 0 0 0 0.2rem rgba(255, 77, 196, 0.25);
+    }
+
+    .btn-primary {
+        background-color: #ff4dc4;
+        border-color: #ff4dc4;
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+
+    .btn-primary:hover {
+        background-color: #ff85a2;
+        border-color: #ff85a2;
+    }
+
+    .login-link {
+        display: block;
+        text-align: center;
+        margin-top: 20px;
+        color: #ff85a2;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .login-link:hover {
+        color: #ff4dc4;
+        text-decoration: underline;
+    }
+
+    .forgot-password {
+        color: #ff85a2;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: bold;
+    }
+    
+    .forgot-password:hover {
+        color: #ff4dc4;
+        text-decoration: underline;
+    }
+    

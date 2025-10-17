@@ -1,0 +1,113 @@
+@using BeatBox.Areas.Media.Models
+@model MediaViewModel
+@{
+    ViewData["Title"] = "Upload Media";
+}
+
+<div class="upload-container d-flex justify-content-center align-items-center">
+    <div class="upload-card shadow-lg rounded-4 p-4">
+        <h2 class="mb-4 text-center fw-bold text-gradient">
+            <i class="fas fa-upload me-2"></i> Upload New Media
+        </h2>
+
+        <form asp-action="Create" asp-controller="Media" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+            <input type="hidden" asp-for="Id" value="@Model.Id">
+            <input type="hidden" asp-for="UserId" value="@Model.UserId">
+
+            <div class="mb-3">
+                <label asp-for="Title" class="form-label fw-semibold"></label>
+                <input asp-for="Title" class="form-control stylish-input" placeholder="Enter media title..." />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Descreption" class="form-label fw-semibold"></label>
+                <textarea asp-for="Descreption" class="form-control stylish-input" placeholder="Write a short description..." rows="3"></textarea>
+                <span asp-validation-for="Descreption" class="text-danger"></span>
+            </div>
+
+
+            <div class="mb-3">
+                <label asp-for="ImageFile" class="form-label fw-semibold">Cover Image (optional)</label>
+                <input asp-for="ImageFile" type="file" class="form-control stylish-input" />
+                <span asp-validation-for="ImageFile" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="MediaFile" class="form-label fw-semibold">Media File</label>
+                <input asp-for="MediaFile" type="file" class="form-control stylish-input" required />
+                <span asp-validation-for="MediaFile" class="text-danger"></span>
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-gradient fw-bold">
+                    <i class="fas fa-cloud-upload-alt me-2"></i> Upload
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .upload-container {
+            min-height: calc(100vh - 200px);
+        }
+
+        .upload-card {
+            max-width: 600px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .text-gradient {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stylish-input::placeholder {
+            color: rgba(255, 255, 255, 0.6); 
+        }
+
+
+        .stylish-input {
+            background: rgba(255, 255, 255, 0.12); 
+            color: #fff; 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .stylish-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 0.2rem rgba(253, 121, 168, 0.2);
+        }
+
+        .form-label {
+            color: var(--light-color);
+        }
+
+        .btn-gradient {
+            background: var(--gradient);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            font-size: 1rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+    </style>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

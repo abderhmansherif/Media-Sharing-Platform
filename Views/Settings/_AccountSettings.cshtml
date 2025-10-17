@@ -1,0 +1,519 @@
+@model AccountSettingsViewModel
+
+@{ Layout = null; }
+
+<div class="account-settings">
+    <form id="account-form" method="post" asp-action="index" asp-controller="Settings" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="All" class="text-danger validation-message"></div>
+        
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="ProfileImageUrl" id="current-picture-url" />
+
+        <!-- Profile Picture Section -->
+        <div class="profile-picture-section">
+            <div class="picture-container">
+                <div class="picture-wrapper" id="picture-upload-trigger">
+                    <img id="profile-preview" src="@(Model.ProfileImageUrl ?? "/images/default-profile.png")" 
+                         class="profile-picture" alt="Profile Picture">
+                    <div class="picture-overlay">
+                        <i class="fas fa-camera"></i>
+                        <span>Change Photo</span>
+                    </div>
+                </div>
+                
+                <div class="picture-actions">
+                    <div class="file-input-wrapper">
+                        <button type="button" class="btn btn-outline-primary">
+                            <i class="fas fa-upload me-2"></i>Upload New
+                        </button>
+                        <input type="file" id="profile-picture-input" name="ImageFile" accept="image/*">
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.ProfileImageUrl) && !Model.ProfileImageUrl.Contains("default-profile.png"))
+                    {
+                        <button type="button" id="remove-picture-btn" class="btn btn-outline-danger">
+                            <i class="fas fa-trash me-2"></i>Remove
+                        </button>
+                    }
+                </div>
+
+                <div class="picture-info">
+                    <small class="text-muted">Recommended: 300x300 pixels, JPG, PNG or GIF. Max 5MB</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Account Details -->
+        <div class="account-details">
+            <div class="form-section">
+                <h5 class="text-accent"><i class="fas fa-user-circle me-2"></i>Account Information</h5>
+                
+                <div class="form-group">
+                    <label class="form-label" asp-for="Username">Username</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user"></i>
+                        <input asp-for="Username" class="form-control" placeholder="Enter your username" />
+                    </div>
+                    <span asp-validation-for="Username" class="text-danger validation-message"></span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" asp-for="Email">Email Address</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input asp-for="Email" type="email" class="form-control" placeholder="Enter your email" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger validation-message"></span>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Save Changes
+                </button>
+                <button type="button" class="btn btn-outline-secondary" onclick="location.reload()">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <div id="account-message" class="message-area"></div>
+</div>
+
+<style>
+.account-settings {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.profile-picture-section {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.picture-container {
+    display: inline-block;
+    text-align: center;
+}
+
+.picture-wrapper {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid var(--accent-color);
+    transition: all 0.3s ease;
+    box-shadow: 0 0 20px rgba(253, 121, 168, 0.3);
+}
+
+.picture-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(253, 121, 168, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.picture-wrapper:hover .picture-overlay {
+    opacity: 1;
+}
+
+.picture-wrapper:hover .profile-picture {
+    transform: scale(1.05);
+}
+
+.picture-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.file-input-wrapper {
+    position: relative;
+}
+
+.file-input-wrapper input[type="file"] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+.picture-info {
+    margin-top: 0.5rem;
+}
+
+.account-details {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 1.5rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.form-section {
+    margin-bottom: 1.5rem;
+}
+
+.form-section h5 {
+    color: var(--accent-color);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: var(--light-color);
+}
+
+.input-with-icon {
+    position: relative;
+}
+
+.input-with-icon i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.input-with-icon .form-control {
+    padding-left: 40px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(253, 121, 168, 0.2);
+    outline: none;
+    color: white;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.validation-message {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 2rem;
+}
+
+.message-area {
+    padding: 0.75rem;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 500;
+    margin-top: 1rem;
+}
+
+.message-area.success {
+    background: rgba(46, 213, 115, 0.1);
+    color: #2ed573;
+    border: 1px solid rgba(46, 213, 115, 0.2);
+}
+
+.message-area.error {
+    background: rgba(255, 71, 87, 0.1);
+    color: #ff4757;
+    border: 1px solid rgba(255, 71, 87, 0.2);
+}
+
+.btn-loading {
+    position: relative;
+    color: transparent !important;
+}
+
+.btn-loading::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 50%;
+    left: 50%;
+    margin-left: -10px;
+    margin-top: -10px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@@media (max-width: 576px) {
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .picture-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('profile-picture-input');
+    const removeBtn = document.getElementById('remove-picture-btn');
+    const accountForm = document.getElementById('account-form');
+    const pictureTrigger = document.getElementById('picture-upload-trigger');
+
+    // Event Listeners
+    if (fileInput && pictureTrigger) {
+        fileInput.addEventListener('change', handleFileUpload);
+        pictureTrigger.addEventListener('click', () => fileInput.click());
+    }
+    
+    if (removeBtn) {
+        removeBtn.addEventListener('click', handleRemovePicture);
+    }
+    
+    if (accountForm) {
+        accountForm.addEventListener('submit', handleFormSubmit);
+    }
+
+    function handleFileUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        // Validate file
+        if (file.size > 5 * 1024 * 1024) {
+            showMessage('File size must be less than 5MB', 'error', 'account-message');
+            e.target.value = '';
+            return;
+        }
+        
+        if (!file.type.match('image.*')) {
+            showMessage('Please select a valid image file', 'error', 'account-message');
+            e.target.value = '';
+            return;
+        }
+        
+        // Preview image immediately
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            const preview = document.getElementById('profile-preview');
+            preview.src = ev.target.result;
+            preview.style.transform = 'scale(1.1)';
+            setTimeout(() => preview.style.transform = 'scale(1)', 300);
+            
+            // Submit form immediately after file selection
+            setTimeout(() => {
+                handleFormSubmit(new Event('submit'));
+            }, 500);
+        };
+        reader.readAsDataURL(file);
+    }
+    
+    function handleRemovePicture() {
+        if (!confirm('Are you sure you want to remove your profile picture?')) return;
+        
+        const formData = new FormData();
+        formData.append('__RequestVerificationToken', document.querySelector('input[name="__RequestVerificationToken"]').value);
+        formData.append('Id', document.querySelector('input[name="Id"]').value);
+        
+        setButtonLoading(removeBtn, true);
+        
+        fetch('@Url.Action("RemoveProfilePicture", "Settings")', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update both preview and hidden field
+                document.getElementById('profile-preview').src = data.profileImageUrl;
+                document.getElementById('current-picture-url').value = data.profileImageUrl;
+                
+                // Hide remove button if default image
+                if (removeBtn && data.profileImageUrl.includes('default')) {
+                    removeBtn.style.display = 'none';
+                }
+                
+                showMessage(data.message, 'success', 'account-message');
+                
+                // Update navbar image if function exists
+                if (window.updateNavbarImage && data.navImageUrl) {
+                    window.updateNavbarImage(data.navImageUrl);
+                }
+                
+                // Refresh any parent components if needed
+                if (window.refreshUserProfile) {
+                    window.refreshUserProfile();
+                }
+            } else {
+                showMessage(data.message, 'error', 'account-message');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showMessage('An error occurred while removing the picture', 'error', 'account-message');
+        })
+        .finally(() => {
+            setButtonLoading(removeBtn, false);
+        });
+    }
+    
+    function handleFormSubmit(e) {
+        if (e && e.preventDefault) {
+            e.preventDefault();
+        }
+        
+        const formData = new FormData(accountForm);
+        const submitBtn = accountForm.querySelector('button[type="submit"]');
+        
+        setButtonLoading(submitBtn, true);
+        document.getElementById('account-message').textContent = '';
+        
+        fetch(accountForm.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update both preview and hidden field with the actual server URL
+                if (data.profileImageUrl) {
+                    document.getElementById('profile-preview').src = data.profileImageUrl;
+                    document.getElementById('current-picture-url').value = data.profileImageUrl;
+                    
+                    // Show remove button if not default image
+                    if (!data.profileImageUrl.toLowerCase().includes('default')) {
+                        if (!removeBtn) {
+                            createRemoveButton();
+                        } else {
+                            removeBtn.style.display = 'block';
+                        }
+                    } else if (removeBtn) {
+                        removeBtn.style.display = 'none';
+                    }
+                }
+                
+                showMessage(data.message, 'success', 'account-message');
+                
+                // Update navbar image if function exists
+                if (window.updateNavbarImage && data.navImageUrl) {
+                    window.updateNavbarImage(data.navImageUrl);
+                }
+                
+                // Refresh any parent components if needed
+                if (window.refreshUserProfile) {
+                    window.refreshUserProfile();
+                }
+            } else {
+                const errors = data.errors ? data.errors.join(', ') : '';
+                showMessage((data.message || 'Error updating profile') + (errors ? `: ${errors}` : ''), 'error', 'account-message');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showMessage('An error occurred while updating your profile', 'error', 'account-message');
+        })
+        .finally(() => {
+            setButtonLoading(submitBtn, false);
+            
+            // Reset file input
+            if (fileInput) {
+                fileInput.value = '';
+            }
+        });
+    }
+    
+    function createRemoveButton() {
+        const removeBtn = document.createElement('button');
+        removeBtn.id = 'remove-picture-btn';
+        removeBtn.className = 'btn btn-outline-danger';
+        removeBtn.innerHTML = '<i class="fas fa-trash me-2"></i>Remove';
+        removeBtn.addEventListener('click', handleRemovePicture);
+        document.querySelector('.picture-actions').appendChild(removeBtn);
+    }
+    
+    function setButtonLoading(button, isLoading) {
+        if (isLoading) {
+            button.classList.add('btn-loading');
+            button.disabled = true;
+        } else {
+            button.classList.remove('btn-loading');
+            button.disabled = false;
+        }
+    }
+    
+    function showMessage(message, type, elementId) {
+        const messageElement = document.getElementById(elementId);
+        messageElement.textContent = message;
+        messageElement.className = `message-area ${type}`;
+        
+        if (type === 'success') {
+            setTimeout(() => {
+                messageElement.textContent = '';
+                messageElement.className = 'message-area';
+            }, 5000);
+        }
+    }
+});
+</script>

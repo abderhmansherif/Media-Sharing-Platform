@@ -1,0 +1,443 @@
+@using BeatBox.Areas.Media.Models
+@model List<BeatBox.ViewModel.ExploreViewModel>
+
+@{
+    ViewData["Title"] = "Explore All Media";
+}
+
+@section Styles {
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --dark-color: #2d3436;
+            --light-color: #f5f6fa;
+            --card-bg: rgba(44, 62, 80, 0.9);
+            --audio-color: #00b894;
+            --video-color: #fd79a8;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header h1 {
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            color: #fff;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .media-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            height: 100%;
+            position: relative;
+        }
+
+        .media-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .media-cover {
+            height: 200px;
+            object-fit: cover;
+            width: 100%;
+        }
+
+        .video-container {
+            position: relative;
+            padding-top: 56.25%; /* 16:9 ratio */
+            background: #000;
+        }
+
+        .video-container video {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+        }
+
+        .media-controls {
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .media-info {
+            padding: 20px;
+        }
+
+        .media-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .media-description {
+            color: #ddd;
+            margin-bottom: 15px;
+        }
+
+        .media-meta {
+            color: #bbb;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .media-type-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .audio-badge {
+            background: var(--audio-color);
+        }
+
+        .video-badge {
+            background: var(--video-color);
+        }
+
+        .favorite-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.6);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .favorite-btn:hover, .favorite-btn.active {
+            background: rgba(231, 76, 60, 0.8);
+            color: #fff;
+        }
+
+        .custom-audio-player {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .gradient-border {
+            position: relative;
+            border-radius: 15px;
+            padding: 3px;
+            background: linear-gradient(45deg, #fd79a8, #e17055, #fdcb6e, #00b894, #74b9ff, #a29bfe);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+            border: 2px solid var(--secondary-color);
+        }
+
+        .user-name {
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .user-name:hover {
+            color: var(--secondary-color);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #bbb;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        @@keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Responsive adjustments */
+        @@media (max-width: 768px) {
+            .filters {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .filter-btn {
+                width: 80%;
+            }
+        }
+    </style>
+}
+
+<div class="header">
+    <div class="container">
+        <h1><i class="fas fa-compass me-2"></i> Explore All Media</h1>
+        <p class="lead">Discover a collection of featured audios and videos</p>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Filters Section -->
+    <div class="filters">
+        <button class="filter-btn active" data-filter="all">All Media</button>
+        <button class="filter-btn" data-filter="audio">Audios Only</button>
+        <button class="filter-btn" data-filter="video">Videos Only</button>
+    </div>
+
+    <!-- Media Grid -->
+    <div class="row" id="media-container">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var media in Model)
+            {
+                <div class="col-lg-4 col-md-6 mb-4 media-item" data-type="@media.MediaType.ToLower()">
+                    <div class="gradient-border">
+                        <div class="media-card">
+                            <!-- Favorite button -->
+                            <button class="favorite-btn" data-media-id="@media.Id">
+                                <i class="far fa-heart"></i>
+                            </button>
+
+                            <!-- Media Type Badge -->
+                            <div class="position-absolute top-0 end-0 m-3">
+                                <span class="media-type-badge @(media.MediaType.ToLower() == "audio" ? "audio-badge" : "video-badge")">
+                                    @media.MediaType
+                                </span>
+                            </div>
+
+                            <!-- Media Content -->
+                            @if (media.MediaType.ToLower() == "audio")
+                            {
+                                <!-- Audio Cover -->
+                                <img src="@media.ImageUrl" class="media-cover" alt="@media.Title" />
+
+                                <!-- Audio Player -->
+                                <div class="media-controls">
+                                    <audio class="custom-audio-player" controls data-media-id="@media.Id">
+                                        <source src="@media.Url" type="audio/mpeg">
+                                        Your browser does not support the audio element.
+                                    </audio>
+                                </div>
+                            }
+                            else
+                            {
+                                <!-- Video Player -->
+                                <div class="video-container">
+                                    <video class="custom-video-player" controls preload="none" poster="@media.ImageUrl" data-media-id="@media.Id">
+                                        <source src="@media.Url" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            }
+
+                            <!-- Media Info -->
+                            <div class="media-info">
+                                <h3 class="media-title">@media.Title</h3>
+                                <p class="media-description">@media.Descreption</p>
+                                <div class="media-meta">
+                                    <div><i class="fas fa-calendar me-2"></i> <span>@media.UploadedAt.ToShortDateString()</span></div>
+                                    <div><i class="fas fa-database me-2"></i> <span>@media.Size</span></div>
+                                </div>
+                            </div>
+
+                            <!-- User Info -->
+                            <div class="user-info">
+                                @if (media.Username.ToLower() != "unknown")
+                                {
+                                    <img src="@media.UserImageUrl" class="user-avatar" alt="@media.Username" />
+                                    <a asp-action="GetOverView" asp-controller="Profile" asp-route-Id = "@media.UserId" class="user-name">
+                                        @media.Username
+                                    </a>
+                                }
+                                else
+                                {
+                                    <img src="/Uploads/Images/navs/default_nav_image.png" class="user-avatar" alt="Default User" />
+                                    <span class="user-name">Unknown User</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12">
+                <div class="empty-state">
+                    <i class="fas fa-folder-open"></i>
+                    <h3>No Media Available</h3>
+                    <p>There are no media files to display at the moment.</p>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Filter functionality
+            const filterButtons = document.querySelectorAll(".filter-btn");
+            const mediaItems = document.querySelectorAll(".media-item");
+
+            filterButtons.forEach(button => {
+                button.addEventListener("click", function() {
+                    // Update active button
+                    filterButtons.forEach(btn => btn.classList.remove("active"));
+                    this.classList.add("active");
+                    
+                    const filter = this.dataset.filter;
+                    
+                    // Filter media items
+                    mediaItems.forEach(item => {
+                        if (filter === "all" || item.dataset.type === filter) {
+                            item.style.display = "block";
+                        } else {
+                            item.style.display = "none";
+                        }
+                    });
+                });
+            });
+
+            // Favorite button functionality
+            document.querySelectorAll(".favorite-btn").forEach(btn => {
+                btn.addEventListener("click", function () {
+                    const mediaId = this.dataset.mediaId;
+
+                    const formData = new FormData();
+                    formData.append("mediaId", mediaId);
+
+                    fetch('/Media/ToggleFavorite', {
+                        method: 'POST',
+                        body: formData
+                    })
+                        .then(response => response.json())
+                        .then(isFavorite => {
+                            if (isFavorite) {
+                                this.classList.add("active");
+                                this.innerHTML = '<i class="fas fa-heart"></i>';
+                            } else {
+                                this.classList.remove("active");
+                                this.innerHTML = '<i class="far fa-heart"></i>';
+                            }
+                        })
+                        .catch(err => console.error("Error in ToggleFavorite:", err));
+                });
+            });
+
+            // Handle audio play to record history
+            document.querySelectorAll("audio").forEach(player => {
+                player.addEventListener("play", function () {
+                    // إيقاف جميع الوسائط الأخرى عند تشغيل وسائط جديدة
+                    document.querySelectorAll("audio, video").forEach(otherMedia => {
+                        if (otherMedia !== this && !otherMedia.paused) {
+                            otherMedia.pause();
+                        }
+                    });
+
+                    const mediaId = this.dataset.mediaId;
+                    const formData = new FormData();
+                    formData.append("mediaId", mediaId);
+
+                    fetch('/Media/RecordListening', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error("Recording failed");
+                        console.log("Audio listening recorded successfully");
+                    })
+                    .catch(err => console.error("Error in RecordListening:", err));
+                });
+            });
+
+            // Handle video play to record history
+            document.querySelectorAll("video").forEach(video => {
+                video.addEventListener("play", function () {
+                    // إيقاف جميع الوسائط الأخرى عند تشغيل وسائط جديدة
+                    document.querySelectorAll("audio, video").forEach(otherMedia => {
+                        if (otherMedia !== this && !otherMedia.paused) {
+                            otherMedia.pause();
+                        }
+                    });
+
+                    const mediaId = this.dataset.mediaId;
+                    const formData = new FormData();
+                    formData.append("mediaId", mediaId);
+
+                    fetch('/Media/RecordListening', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error("Recording failed");
+                        console.log("Video listening recorded successfully");
+                    })
+                    .catch(err => console.error("Error in RecordListening:", err));
+                });
+            });
+        });
+    </script>
+}

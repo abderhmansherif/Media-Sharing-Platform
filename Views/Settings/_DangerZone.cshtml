@@ -1,0 +1,202 @@
+@model DangerZoneViewModel
+@{ Layout = null; }
+
+<div class="danger-zone-card">
+    <div class="card-header">
+        <div class="header-content">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <div>
+                <h5 class="mb-1 text-danger">Delete Account</h5>
+                <p class="mb-0 text-danger">Permanently delete your account and all data</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <div class="warning-section">
+            <div class="warning-icon">
+                <i class="fas fa-skull-crossbones"></i>
+            </div>
+            <div class="warning-content">
+                <h6 class="text-danger">This action cannot be undone</h6>
+                <p class="mb-0">
+                    Once you delete your account, all of your profile information, favorites, 
+                    history, and personal data will be permanently removed. This action is 
+                    irreversible.
+                </p>
+            </div>
+        </div>
+
+        <form id="deleteAccountForm" method="post" asp-action="DeleteAccount" asp-controller="Settings">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+
+            <div class="confirmation-fields">
+                <div class="form-group">
+                    <label asp-for="ConfirmPassword" class="form-label text-danger">
+                        <i class="fas fa-lock me-2"></i>Enter your password to confirm
+                    </label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input asp-for="ConfirmPassword" id="ConfirmPassword" type="password"
+                               class="form-control confirmation-input"
+                               placeholder="Enter your password" required />
+                    </div>
+                    <span asp-validation-for="ConfirmPassword" class="text-danger validation-message"></span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-danger btn-block">
+                <i class="fas fa-trash-alt me-2"></i>Permanently Delete My Account
+            </button>
+        </form>
+
+        <div class="mt-3">
+            <a asp-action="Index" asp-controller="Home" class="btn btn-secondary w-100">
+                Cancel
+            </a>
+        </div>
+
+        <div id="dangerzone-message" class="message-area"></div>
+    </div>
+</div>
+
+<style>
+/* نفس الاستايل بتاعك بالظبط */
+.danger-zone-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 71, 87, 0.3);
+    overflow: hidden;
+}
+
+.danger-zone-card .card-header {
+    background: rgba(255, 71, 87, 0.1);
+    border-bottom: 1px solid rgba(255, 71, 87, 0.3);
+    padding: 1.5rem;
+}
+
+.header-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.header-content i {
+    font-size: 1.5rem;
+    color: #ff4757;
+    margin-top: 0.25rem;
+}
+
+.card-body { padding: 1.5rem; }
+
+.warning-section {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: rgba(255, 71, 87, 0.05);
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(255, 71, 87, 0.2);
+}
+
+.warning-icon { font-size: 1.5rem; color: #ff4757; }
+
+.confirmation-fields { margin-bottom: 1.5rem; }
+
+.form-group { margin-bottom: 1.5rem; }
+
+.form-label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--light-color); }
+
+.input-with-icon { position: relative; }
+
+.input-with-icon i {
+    position: absolute; left: 12px; top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.input-with-icon .form-control { padding-left: 40px; }
+
+.form-control {
+    width: 100%; padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    color: white;
+}
+
+.confirmation-input {
+    border-color: rgba(255, 71, 87, 0.3);
+}
+
+.confirmation-input:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #ff4757;
+    box-shadow: 0 0 0 2px rgba(255, 71, 87, 0.2);
+    outline: none;
+    color: white;
+}
+
+.form-control::placeholder { color: rgba(255, 255, 255, 0.5); }
+
+.message-area {
+    padding: 0.75rem;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 500;
+    margin-top: 1rem;
+}
+
+.message-area.success {
+    background: rgba(46, 213, 115, 0.1);
+    color: #2ed573;
+    border: 1px solid rgba(46, 213, 115, 0.2);
+}
+
+.message-area.error {
+    background: rgba(255, 71, 87, 0.1);
+    color: #ff4757;
+    border: 1px solid rgba(255, 71, 87, 0.2);
+}
+</style>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.getElementById("deleteAccountForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const form = e.target;
+            const formData = new FormData(form);
+            const messageDiv = document.getElementById("dangerzone-message");
+
+            messageDiv.innerHTML = "";
+            messageDiv.className = "message-area";
+
+            try {
+                const response = await fetch(form.action, {
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    messageDiv.classList.add("success");
+                    messageDiv.innerHTML = result.message;
+                    setTimeout(() => window.location.href = result.redirectUrl, 1500);
+                } else {
+                    messageDiv.classList.add("error");
+                    messageDiv.innerHTML = result.message || "Something went wrong.";
+                }
+            } catch (err) {
+                messageDiv.classList.add("error");
+                messageDiv.innerHTML = "Unexpected error occurred. Please try again.";
+            }
+        });
+    </script>
+}
