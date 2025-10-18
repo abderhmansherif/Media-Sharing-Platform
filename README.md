@@ -5,6 +5,7 @@ The goal of this project is to create a community-driven media platform where pe
 
 
 
+
 ## Key Features
 
 - Secure Authentication & Authorization using ASP.NET Identity  
@@ -19,6 +20,7 @@ The goal of this project is to create a community-driven media platform where pe
 
 
 
+
 ## Tech Stack
 
 - **Backend:** ASP.NET Core, Entity Framework Core
@@ -28,9 +30,12 @@ The goal of this project is to create a community-driven media platform where pe
 
 
 
+
 ## ⚙️ Installation & Usage
 
 Follow these steps to set up and run the project locally using Docker:
+
+
 
 ---
 
@@ -40,6 +45,7 @@ Follow these steps to set up and run the project locally using Docker:
 ```
 git clone https://github.com/abderhmansherif/Media-Sharing-Platform.git
 cd Media-Sharing-Platform
+```
 
 ### 2️⃣ Create the configuration file
 
@@ -47,7 +53,7 @@ Before running the app, you need to create a file named **`appsettings.json`**
 in the project root directory to include your API keys and configuration details.
 
 Example:
-```json
+```
 {
   "Cloudinary": {
     "CloudName": "your-cloud-name",
