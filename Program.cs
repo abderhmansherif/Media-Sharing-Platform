@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add services to the Collection Services container.
 builder.Services.AddControllersWithViews();
 
 builder.Services.Configure<FormOptions>(options =>
@@ -46,16 +46,12 @@ builder.Services.AddScoped<IFileManager, FileManager>();
 builder.Services.AddScoped<IMediaManager, MediaManager>();
 builder.Services.AddScoped<EmailService>();
 
-var account = new Account(
-    "dbyg4dfic",          // CloudName
-    "892779178643343",    // ApiKey
-    "9DKkuZ2rIfba9ocg7bx_CtJW6Y0" // ApiSecret
-);
 
 builder.Services.AddDbContext<AppDbContext>(options => options
         .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
+
 builder.Services.AddSingleton<Cloudinary>(sp =>
 {
     var config = sp.GetRequiredService<IOptions<CloudinarySettings>>().Value;
@@ -75,6 +71,7 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     await IdentityConfig.CreatAdminUsersAsync(services);
 }
+
 app.UseStaticFiles(); 
 
 app.UseRouting();

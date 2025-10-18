@@ -22,7 +22,7 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: app-db
     ports:
-      - "40:1433"
+      - "80:1433"
     networks:
       - div
     environment:

@@ -28,8 +28,6 @@ namespace BeatBox.Models
 
                 await context.Database.EnsureCreatedAsync();
 
-                await context.Database.MigrateAsync();
-
                 if (await RoleManager.FindByNameAsync(RoleName) is null)
                 {
                     await RoleManager.CreateAsync(new IdentityRole { Name = RoleName });
