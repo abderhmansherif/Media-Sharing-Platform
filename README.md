@@ -4,6 +4,7 @@ A full-featured web platform for uploading, sharing, and managing media content 
 The goal of this project is to create a community-driven media platform where people can share their experiences, ideas, and creativity through videos and audios — connecting individuals through the power of media.
 
 
+
 ## Key Features
 
 - Secure Authentication & Authorization using ASP.NET Identity  
@@ -17,13 +18,15 @@ The goal of this project is to create a community-driven media platform where pe
 - Fully responsive design and structured architecture for scalability and maintainability
 
 
+
 ## Tech Stack
 
 - **Backend:** ASP.NET Core, Entity Framework Core
 - **Frontend:** HTML, CSS, Razor Views
 - **Database:** SQL Server 
 - **Deployment:** Docker, Docker Compose
-  
+
+
 
 ## ⚙️ Installation & Usage
 
@@ -31,8 +34,10 @@ Follow these steps to set up and run the project locally using Docker:
 
 ---
 
+
 ### 1️⃣ Clone the repository
-```bash
+
+```
 git clone https://github.com/abderhmansherif/Media-Sharing-Platform.git
 cd Media-Sharing-Platform
 
@@ -54,15 +59,17 @@ Example:
   },
  
 }
-
+```
 
 ### 3️⃣ Run the application using Docker Compose
 
 The project already includes a **Dockerfile** and **docker-compose.yml** for containerized deployment.
 
 Run:
-```bash
+```
 docker-compose up --build
+
+```
 
 - Build the application image (beatbox:v1.0)
 - Start the SQL Server container (app-db)
