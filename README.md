@@ -31,7 +31,7 @@ The goal of this project is to create a community-driven media platform where pe
 
 
 
-## ⚙️ Installation & Usage
+## Installation 
 
 Follow these steps to set up and run the project locally using Docker:
 
@@ -84,7 +84,7 @@ docker-compose up --build
 👉 http://localhost:8080
 
 
-## 🧪 Usage
+## Usage
 
 After starting the containers:
 
