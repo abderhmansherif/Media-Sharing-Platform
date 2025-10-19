@@ -55,12 +55,12 @@ in the project root directory to include your API keys and configuration details
 Example:
 ```
 {
-  "Cloudinary": {
-    "CloudName": "your-cloud-name",
-    "ApiKey": "your-api-key",
-    "ApiSecret": "your-api-secret"
+  "CloudinarySettings": {
+    "CloudName ": "your-cloud-name",
+    "ApiKey ": "your-api-key",
+    "ApiSecret ": "your-api-secret"
   },
-  "SendGrid": {
+  "SendGridConfig": {
     "ApiKey": "your-sendgrid-api-key"
   },
  
