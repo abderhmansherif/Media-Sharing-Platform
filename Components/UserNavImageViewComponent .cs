@@ -21,17 +21,7 @@ namespace BeatBox.Areas.Components
             var user = await _userManager.GetUserAsync(HttpContext.User);
 
             if (user == null)
-            {
-                var defaultUser = new AppUser
-                {
-                    UserName = "Guest",
-                    Id = "0",
-                    PictureUrl = "/images/default_image.png",
-                    NavBarPicture = "/images/Navbar_images/default_nav_image.png",
-                    ProfilePicture = "/images/profile_images/default_profile_image.png"
-                };
-                return View("Default", defaultUser);
-            }
+                return null!;
 
             return View("Default", user);
         }

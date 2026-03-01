@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BeatBox.Migrations
 {
     /// <inheritdoc />
-    public partial class Fix_Relations : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -33,8 +33,8 @@ namespace BeatBox.Migrations
                     PictureUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NavBarPicture = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProfilePicture = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    HasAuthenticator = table.Column<bool>(type: "bit", nullable: false),
                     Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Is2F = table.Column<bool>(type: "bit", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),

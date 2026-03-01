@@ -34,6 +34,45 @@ namespace BeatBox.Areas.Media.Controllers
             _userManager = userManager;
         }
 
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Search(string term)
+        {
+            if(string.IsNullOrEmpty(term))
+            {
+                return RedirectToAction("Explore", "Media");
+            }
+
+            term = term.Trim();
+
+            var medias = await _context.Medias
+                        .Include(x => x.User)
+                        .Include(x => x.MediaType)
+                        .Where(m => m.Title.Contains(term) || m.Descreption.Contains(term))
+                        .OrderByDescending(x => x.UploadedAt)
+                        .ToListAsync();
+
+            List<ExploreViewModel> model = medias.Select(x => new ExploreViewModel
+            {
+                Id = x.Id,
+                Title = x.Title,
+                Descreption = x.Descreption,
+                ImageUrl = x.ImageUrl,
+                Url = x.Url,
+                UserId = x.UserId,
+                Username = x.User?.UserName ?? "Unknown",
+                Size = x.Size,
+                UploadedAt = x.UploadedAt,
+                MediaType = x.MediaType.Name,
+                UserImageUrl = x.User?.NavBarPicture ?? "/Uploads/Images/navs/default_nav_image.png",
+                MediaTypeId = x.MediaTypeId,
+            })
+            .ToList();
+
+            return View("Explore",model);
+        }
+
+
         [HttpGet]
         public async Task<IActionResult> Explore()
         {
@@ -81,8 +120,7 @@ namespace BeatBox.Areas.Media.Controllers
             return Json(userMedias);
         }
 
-        
-
+  
         [HttpGet]
         public IActionResult GetAllAudios()
         {
@@ -150,6 +188,7 @@ namespace BeatBox.Areas.Media.Controllers
 
         }
 
+
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> Create(string Id)
@@ -176,7 +215,7 @@ namespace BeatBox.Areas.Media.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [RequestSizeLimit(2_147_483_648)] // 2GB
+        [RequestSizeLimit(2_147_483_648)] 
         [RequestFormLimits(MultipartBodyLengthLimit = 2_147_483_648)]
         public async Task<IActionResult> Create(MediaViewModel mediaViewModel)
         {

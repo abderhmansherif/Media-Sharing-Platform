@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
+
 using BeatBox.Areas.Admin.Models;
 using BeatBox.Models;
 using BeatBox.Services;
@@ -13,9 +9,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using SixLabors.ImageSharp.Formats.Png;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
-using CloudinaryDotNet;
 
 namespace BeatBox.Controllers
 {

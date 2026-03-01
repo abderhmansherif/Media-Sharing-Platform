@@ -24,9 +24,7 @@ namespace BeatBox.Models
 
             using (var context = serviceProvider.GetRequiredService<AppDbContext>())
             {
-                await context.Database.EnsureDeletedAsync();
-
-                await context.Database.EnsureCreatedAsync();
+            
 
                 if (await RoleManager.FindByNameAsync(RoleName) is null)
                 {
@@ -42,6 +40,7 @@ namespace BeatBox.Models
                         PictureUrl = "/Uploads/Images/default_image.png",
                         NavBarPicture = "/Uploads/Images/navs/default_nav_image.png",
                         ProfilePicture = "/Uploads/Images/profiles/default_profile_image.png",
+                        EmailConfirmed = true,
                     };
 
                     var results = await userManager.CreateAsync(user, password);

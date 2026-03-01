@@ -128,7 +128,6 @@
         }
     </section>
 
-    <!-- أحدث الفيديوهات -->
     <section class="video-media mb-5">
         <div class="section-header d-flex justify-content-between align-items-center mb-4">
             <h2 class="section-title">
@@ -182,7 +181,7 @@
                 <p>Be the first to share videos on the platform!</p>
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <a asp-action="Create" asp-controller="Media" asp-route-Id = "@User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value"   class="btn btn-primary mt-2">شارك فيديوهاتك</a>
+                    <a asp-action="Create" asp-controller="Media" asp-route-Id = "@User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value"   class="btn btn-primary mt-2">Share Your Videos</a>
                 }
                 else
                 {
@@ -192,7 +191,6 @@
         }
     </section>
 
-    <!-- قسم الميزات -->
     <section class="platform-features py-5 mb-5">
         <div class="row text-center">
             <div class="col-md-4 feature-item mb-4">
@@ -219,7 +217,6 @@
         </div>
     </section>
 
-    <!-- دعوة للعمل -->
     @if (!User.Identity.IsAuthenticated)
     {
         <section class="cta-section text-center py-5 rounded">
@@ -229,7 +226,6 @@
     }
 </div>
 
-<!-- مشغل الصوتيات -->
 <div class="audio-player" id="audioPlayer">
     <div class="player-container">
         <div class="track-info">
@@ -262,7 +258,6 @@
 </div>
 
 <style>
-    /* أنيميشن للهيرو سيكشن */
     .animate-fade-in {
         animation: fadeIn 1s ease-out;
     }
@@ -289,7 +284,6 @@
         to { opacity: 1; transform: translateY(0); }
     }
     
-    /* تحسينات للهيرو سيكشن */
     .hero-section {
         background: linear-gradient(135deg, rgba(108, 92, 231, 0.1) 0%, rgba(162, 155, 254, 0.1) 100%);
         border-radius: 20px;
@@ -345,7 +339,6 @@
         opacity: 0.8;
     }
     
-    /* تحسينات لكروت الميديا */
     .media-card {
         background: rgba(30, 30, 40, 0.7);
         border-radius: 15px;
