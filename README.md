@@ -11,7 +11,8 @@ The goal of this project is to create a community-driven media platform where pe
 - Secure Authentication & Authorization using ASP.NET Identity  
 - Complete Account Management: email confirmation, password reset, and two-factor authentication  
 - Editable user profiles (name, email, and profile picture)  
-- Dynamic Admin Dashboard for managing users, roles, and permissions  
+- Dynamic Admin Dashboard for managing users, roles, and permissions
+- Searching functionality for media
 - Email service integration (SendGrid) for automated notifications and verifications  
 - Media management system — users can upload, view, and delete their media content (videos & audios)  
 - Personalized user experience with favorites and watch history tracking  
