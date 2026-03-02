@@ -7,6 +7,10 @@ obj/
 *.userosscache
 *.sln.docstates
 # Ignore publish settings
+# Visual Studio
+.vs/
+bin/
+obj/
 Properties/PublishProfiles/
 # Ignore appsettings (secrets)
 appsettings*.json
@@ -15,3 +19,9 @@ appsettings*.json
 *.tmp
 # Ignore environment-specific configs
 .env
+wwwroot/Uploads/Audios
+wwwroot/Uploads/Images/navs
+wwwroot/Uploads/Images/profiles
+wwwroot/Uploads/Images/
+wwwroot/Uploads/Videos
+

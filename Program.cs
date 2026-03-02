@@ -48,14 +48,15 @@ builder.Services.AddScoped<EmailService>();
 
 
 builder.Services.AddDbContext<AppDbContext>(options => options
-        .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+        .UseSqlServer(builder.Configuration["ConnectionStrings:Default"]));
+
 
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
 builder.Services.AddSingleton<Cloudinary>(sp =>
 {
     var config = sp.GetRequiredService<IOptions<CloudinarySettings>>().Value;
-    return new Cloudinary(new Account(config.CloudName, config.ApiKey, config.ApiSecret));
+    return new Cloudinary(new Account(cloud: config.CloudName, config.ApiKey, config.ApiSecret));
 });
 
 var app = builder.Build();
