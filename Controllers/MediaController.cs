@@ -43,16 +43,12 @@ namespace BeatBox.Areas.Media.Controllers
                 return RedirectToAction("Explore", "Media");
             }
 
-            term = term.Trim();
+            string[] keys = term.Trim().Split(' ');
 
-            var medias = await _context.Medias
-                        .Include(x => x.User)
-                        .Include(x => x.MediaType)
-                        .Where(m => m.Title.Contains(term) || m.Descreption.Contains(term))
-                        .OrderByDescending(x => x.UploadedAt)
-                        .ToListAsync();
+            var medias = _context.Medias.Where(x => keys.Any(k => x.Title.Contains(k) || x.Descreption.Contains(k)));
 
-            List<ExploreViewModel> model = medias.Select(x => new ExploreViewModel
+
+            List<ExploreViewModel> model = await medias.Select(x => new ExploreViewModel
             {
                 Id = x.Id,
                 Title = x.Title,
@@ -60,14 +56,13 @@ namespace BeatBox.Areas.Media.Controllers
                 ImageUrl = x.ImageUrl,
                 Url = x.Url,
                 UserId = x.UserId,
-                Username = x.User?.UserName ?? "Unknown",
+                Username = x.User.UserName ?? "Unknown",
                 Size = x.Size,
                 UploadedAt = x.UploadedAt,
                 MediaType = x.MediaType.Name,
-                UserImageUrl = x.User?.NavBarPicture ?? "/Uploads/Images/navs/default_nav_image.png",
+                UserImageUrl = x.User.NavBarPicture ?? "/Uploads/Images/navs/default_nav_image.png",
                 MediaTypeId = x.MediaTypeId,
-            })
-            .ToList();
+            }).ToListAsync();
 
             return View("Explore",model);
         }

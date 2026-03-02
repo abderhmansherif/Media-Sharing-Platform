@@ -19,7 +19,7 @@ namespace BeatBox.Services
         {
             var client = new SendGridClient(_apiKey);
 
-            var fromAddress = new EmailAddress("bebosherif202@gmail.com", "BeatBox"); // bebosherif202@gmail.com // bebosherif202@gmail.com
+            var fromAddress = new EmailAddress("abderhmansherif221@gmail.com", "BeatBox"); 
 
             var toAddress = new EmailAddress(to, "Username");
 
